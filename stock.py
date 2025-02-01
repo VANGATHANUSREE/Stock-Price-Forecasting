@@ -248,3 +248,85 @@ plt.title('Actual vs. Predicted Stock Prices')
 plt.legend()
 plt.grid(True)
 plt.show()
+
+# GRADIENT BOOSTING
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import classification_report
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.tree import export_graphviz
+from pydotplus import graph_from_dot_data
+from IPython.display import Image
+import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
+
+# Read data from the CSV file (replace with your actual file path)
+file_path = "C:\\Users\\Thanu\\OneDrive\\Documents\\Desktop\\yahoofinance.csv"
+df = pd.read_csv("C:\\Users\\Thanu\\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+
+# Convert the "ds" column to datetime
+df['ds'] = pd.to_datetime(df['ds'])
+
+# Extract timestamps (in seconds) from the datetime column
+df['ds'] = df['ds'].astype('int64') // 10**9
+
+# Assuming 'Low' is the target variable (classification problem)
+X = df.drop(columns=['Low'])  # Features (excluding 'Low')
+y = df['Low']  # Target variable
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+gb_regressor = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+gb_regressor.fit(X_train, y_train)
+y_pred = gb_regressor.predict(X_test)
+y_pred = gb_regressor.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"R-squared (R2): {r2:.2f}")
+# Evaluate the model
+print(y_test, y_pred)
+
+
+
+# Assuming you've already trained the model (e.g., gb_regressor)
+feature_importances = gb_regressor.feature_importances_
+feature_names = X.columns
+
+# Create a bar plot for feature importances
+plt.figure(figsize=(10, 6))
+plt.barh(feature_names, feature_importances)
+plt.xlabel('Importance')
+plt.ylabel('Feature')
+plt.title('Feature Importances')
+plt.show()
+
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.xlabel('Actual Prices')
+plt.ylabel('Predicted Prices')
+plt.title('Actual vs. Predicted Prices')
+plt.show()
+
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Close*'])
+plt.xlabel('Timestamp')
+plt.ylabel('Close Prices')
+plt.title('Close Prices Over Time')
+plt.show()
+
+r2 = r2_score(y_test, y_pred)
+print(f'R² score: {r2:.2f}')
+from sklearn.metrics import mean_absolute_error
+
+# Calculate Mean Absolute Error (MAE)
+mae = mean_absolute_error(y_test, y_pred)
+print(f"Mean Absolute Error (MAE): {mae:.2f}")
+
+# Calculate Mean Absolute Percentage Error (MAPE)
+mape = 100 * (abs(y_test - y_pred) / y_test).mean()
+print(f"Mean Absolute Percentage Error (MAPE): {mape:.2f}%")
+
