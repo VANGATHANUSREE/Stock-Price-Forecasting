@@ -330,3 +330,86 @@ print(f"Mean Absolute Error (MAE): {mae:.2f}")
 mape = 100 * (abs(y_test - y_pred) / y_test).mean()
 print(f"Mean Absolute Percentage Error (MAPE): {mape:.2f}%")
 
+# STOCK PRICE TRENDS
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+df = pd.read_csv("C:\\Users\\Thanu\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+# Display basic statistics
+print(df.describe())
+
+df = pd.read_csv("C:\\Users\\Thanu\\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+
+# Convert the "ds" column to datetime
+df['ds'] = pd.to_datetime(df['ds'])
+
+# Extract timestamps (in seconds) from the datetime column
+df['ds'] = df['ds'].astype('int64') // 10**9
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Open'], label='Open')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['High'], label='High')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Low'], label='Low')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
+
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Close*'], label='Closing Price')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
+
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Adj Close**'], label=' Adjacent Closing Price')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
+
+
+# Visualize stock price trends
+plt.figure(figsize=(10, 6))
+plt.plot(df['ds'], df['Volume'], label='Volume')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title(' Price Trends')
+plt.legend()
+plt.show()
