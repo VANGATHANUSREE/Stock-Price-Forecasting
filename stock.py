@@ -413,3 +413,183 @@ plt.ylabel('Stock Price')
 plt.title(' Price Trends')
 plt.legend()
 plt.show()
+
+# LINEAR REGRESSION AND XGBREGRESSOR
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+df = pd.read_csv("C:\\Users\\Thanu\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+# Display basic statistics
+print(df.describe())
+
+df = pd.read_csv("C:\\Users\\Thanu\\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+
+# Convert the "ds" column to datetime
+df['ds'] = pd.to_datetime(df['ds'])
+
+# Extract timestamps (in seconds) from the datetime column
+df['ds'] = df['ds'].astype('int64') // 10**9
+train, valid = train_test_split(df, test_size=0.2, shuffle=False)
+# Initialize models
+lr_model = LinearRegression()
+xgb_model = XGBRegressor()
+
+
+# Fit models
+lr_model.fit(train[['ds']], train['Open'])
+xgb_model.fit(train[['ds']], train['Open'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+lr_mse = mean_squared_error(valid['Open'], lr_pred)
+xgb_mse = mean_squared_error(valid['Open'], xgb_pred)
+lr_r2 = r2_score(valid['Open'], lr_pred)
+xgb_r2 = r2_score(valid['Open'], xgb_pred)
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Open'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('Open')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
+
+
+
+# Fit models
+lr_model.fit(train[['ds']], train['High'])
+xgb_model.fit(train[['ds']], train['High'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+lr_mse = mean_squared_error(valid['High'], lr_pred)
+xgb_mse = mean_squared_error(valid['High'], xgb_pred)
+lr_r2 = r2_score(valid['High'], lr_pred)
+xgb_r2 = r2_score(valid['High'], xgb_pred)
+
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Low'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('High')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
+
+
+# Fit models
+lr_model.fit(train[['ds']], train['Low'])
+xgb_model.fit(train[['ds']], train['Low'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+lr_mse = mean_squared_error(valid['Low'], lr_pred)
+xgb_mse = mean_squared_error(valid['Low'], xgb_pred)
+lr_r2 = r2_score(valid['Low'], lr_pred)
+xgb_r2 = r2_score(valid['Low'], xgb_pred)
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Low'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('Low')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
+
+# Fit models
+lr_model.fit(train[['ds']], train['Adj Close**'])
+xgb_model.fit(train[['ds']], train['Adj Close**'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+# Evaluate
+lr_mse = mean_squared_error(valid['Adj Close**'], lr_pred)
+xgb_mse = mean_squared_error(valid['Adj Close**'], xgb_pred)
+lr_r2 = r2_score(valid['Adj Close**'], lr_pred)
+xgb_r2 = r2_score(valid['Adj Close**'], xgb_pred)
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Adj Close**'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('Adjacent Close')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
+
+
+# Fit models
+lr_model.fit(train[['ds']], train['Close*'])
+xgb_model.fit(train[['ds']], train['Close*'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+# Evaluate
+lr_mse = mean_squared_error(valid['Close*'], lr_pred)
+xgb_mse = mean_squared_error(valid['Close*'], xgb_pred)
+lr_r2 = r2_score(valid['Close*'], lr_pred)
+xgb_r2 = r2_score(valid['Close*'], xgb_pred)
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Close*'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('Close')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
+
+
+
+# Fit models
+lr_model.fit(train[['ds']], train['Volume'])
+xgb_model.fit(train[['ds']], train['Volume'])
+# Make predictions
+lr_pred = lr_model.predict(valid[['ds']])
+xgb_pred = xgb_model.predict(valid[['ds']])
+
+lr_mse = mean_squared_error(valid['Volume'], lr_pred)
+xgb_mse = mean_squared_error(valid['Volume'], xgb_pred)
+lr_r2 = r2_score(valid['Volume'], lr_pred)
+xgb_r2 = r2_score(valid['Volume'], xgb_pred)
+
+print(f"Linear Regression - MSE: {lr_mse:.2f}, R2: {lr_r2:.2f}")
+print(f"XGBoost - MSE: {xgb_mse:.2f}, R2: {xgb_r2:.2f}")
+plt.figure(figsize=(10, 6))
+plt.plot(valid['ds'], valid['Volume'], label='Actual Price')
+plt.plot(valid['ds'], lr_pred, label='LR Prediction')
+plt.plot(valid['ds'], xgb_pred, label='XGB Prediction')
+plt.xlabel('Date')
+plt.ylabel('Volume')
+plt.title('Stock Price Predictions')
+plt.legend()
+plt.show()
