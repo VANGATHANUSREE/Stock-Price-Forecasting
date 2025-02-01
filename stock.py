@@ -17,3 +17,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Input, LSTM, Dense, Dropout, Attention, MultiHeadAttention
+import pandas as pd
+df=pd.read_csv("C:\\Users\\Thanu\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+df.head()  # Display the first few rows
+df.shape   # Get the dimensions of the dataset
+df.describe()  # Summary statistics
+df.info()
