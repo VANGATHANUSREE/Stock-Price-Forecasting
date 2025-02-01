@@ -414,6 +414,73 @@ plt.title(' Price Trends')
 plt.legend()
 plt.show()
 
+from tensorflow.keras.layers import Dropout
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import GRU, Dense
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
+valid_data = pd.read_csv("C:\\Users\\Thanu\OneDrive\\Documents\\Desktop\\yahoofinance.csv")
+valid_data['ds'] = pd.to_datetime(valid_data['ds'])
+valid_data['ds'] = valid_data['ds'].astype('int64') / 10**9
+print(valid_data.dtypes)
+dates = valid_data['ds']
+X = valid_data.drop(['Close*'], axis=1)
+y = valid_data['Close*']
+actual_prices = valid_data['Close*']
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize the data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+actual_changes = np.diff(actual_prices)
+
+# Create a new DataFrame with the dates and changes
+changes_df = pd.DataFrame({'ds': dates[:-1], 'y': actual_changes})
+
+# Train the model using GRU
+regressorGRU = Sequential()
+regressorGRU.add(GRU(units=50, return_sequences=True, input_shape=(X_train.shape[1],1)))
+regressorGRU.add(Dropout(0.2))
+regressorGRU.add(GRU(units=50, return_sequences=True))
+regressorGRU.add(Dropout(0.2))
+regressorGRU.add(GRU(units=50, return_sequences=True))
+regressorGRU.add(Dropout(0.2))
+regressorGRU.add(GRU(units=50))
+regressorGRU.add(Dropout(0.2))
+regressorGRU.add(Dense(units=1))
+
+regressorGRU.compile(optimizer='adam',loss='mean_squared_error')
+regressorGRU.fit(X_train,y_train,epochs=100,batch_size=10)
+
+# Make predictions using the test set
+predictions_changes = regressorGRU.predict(X_test)
+
+# Convert the changes back to actual values
+predictions_df = pd.DataFrame({'ds': dates[len(predictions_changes):], 'y': actual_prices[-len(predictions_changes):] + np.cumsum(predictions_changes)})
+
+# Plot the actual and predicted values
+plt.figure(figsize=(10, 6))
+plt.plot(dates, actual_prices, label='Actual Prices', color='blue')
+plt.plot(dates[:len(predictions_df)], predictions_df, label='Predicted Prices', color='orange')
+plt.xlabel('Date')
+plt.ylabel('Closing Price')
+plt.title('Actual vs. Predicted Stock Prices')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+y_pred = regressorGRU.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print(f"RMSE: {rmse:.4f}")
+
 # LINEAR REGRESSION AND XGBREGRESSOR
 import numpy as np
 import pandas as pd
