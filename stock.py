@@ -660,3 +660,83 @@ plt.ylabel('Volume')
 plt.title('Stock Price Predictions')
 plt.legend()
 plt.show()
+
+import tkinter as tk
+from tkinter import filedialog
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+class StockPriceApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Stock Price Trend Viewer")
+
+        # Create a button for loading the CSV file
+        self.load_button = tk.Button(root, text="Load CSV File", command=self.load_file)
+        self.load_button.pack(pady=10)
+
+        # Dropdown menu for selecting which column to plot
+        self.column_label = tk.Label(root, text="Select Stock Price Column")
+        self.column_label.pack(pady=5)
+        
+        self.column_var = tk.StringVar()
+        self.column_menu = tk.OptionMenu(root, self.column_var, "")
+        self.column_menu.pack(pady=5)
+
+        # Plotting button
+        self.plot_button = tk.Button(root, text="Plot Stock Price Trend", command=self.plot_trend)
+        self.plot_button.pack(pady=10)
+
+        # Canvas for displaying the plot
+        self.canvas_frame = tk.Frame(root)
+        self.canvas_frame.pack(pady=20)
+
+        self.df = None  # Dataframe to store loaded CSV data
+
+    def load_file(self):
+        """Load CSV file and update the dropdown menu with column options"""
+        file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+        
+        if file_path:
+            # Read the CSV file
+            self.df = pd.read_csv(file_path)
+            
+            # Check the column names and update the dropdown menu
+            columns = self.df.columns.tolist()
+            self.column_var.set(columns[0])  # Set the first column as the default
+            self.column_menu['menu'].delete(0, 'end')
+            
+            for column in columns:
+                self.column_menu['menu'].add_command(label=column, command=tk._setit(self.column_var, column))
+
+    def plot_trend(self):
+        """Plot the selected stock price trend"""
+        if self.df is not None:
+            selected_column = self.column_var.get()
+            if selected_column not in self.df.columns:
+                return
+            
+            # Plot the stock price trend
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.plot(pd.to_datetime(self.df['ds']), self.df[selected_column], label=selected_column)
+
+            # Set plot labels and title
+            ax.set_xlabel('Date')
+            ax.set_ylabel(f'{selected_column} Price')
+            ax.set_title(f'{selected_column} Price Trend')
+
+            # Clear any existing canvas and display the new plot
+            for widget in self.canvas_frame.winfo_children():
+                widget.destroy()
+                
+            # Embed the plot in Tkinter window
+            canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
+            canvas.get_tk_widget().pack()
+            canvas.draw()
+
+# Main function to run the app
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = StockPriceApp(root)
+    root.mainloop()
